@@ -463,6 +463,9 @@ bot2=telepot.Bot(TOKEN2)
 MessageLoop(bot,{'chat': on_chat_message,'callback_query': on_callback_query, 'pre_checkout_query': on_pre_checkout_query}).run_as_thread()
 MessageLoop(bot2,{'chat': on_chat_message2}).run_as_thread()
 
+while 1:
+    time.sleep(10)
+
 
 
 
