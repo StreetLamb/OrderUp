@@ -1,0 +1,2 @@
+pprint==0.1
+telepot==12.1
