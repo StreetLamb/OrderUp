@@ -25,6 +25,7 @@ money=u'\U0001f4b0'
 timer=u'\u231B'
 pray=u'\U0001f64f'
 phone=u"\U0001F4DE"
+siren=u"\U0001F6A8"
 
 def on_pre_checkout_query(msg):
     query_id, from_id, invoice_payload = telepot.glance(msg, flavor='pre_checkout_query')
@@ -99,7 +100,6 @@ def on_chat_message(msg):
                 verify(chat_id)
                 
     elif 'successful_payment' in msg.keys():
-            print('test')
             bot.sendMessage(chat_id, 'Wah you damn brudder. Thanks for the Kopi! Limpeh will remember you forever!!')
             bot.sendSticker(chat_id, 'CAADAgADJQADyIsGAAGoEDksgR1WpAI')
 
@@ -108,7 +108,15 @@ def on_chat_message(msg):
         if msg['text']=="/start":
             verify(chat_id)
 
+        elif msg['text']=="/stop":
+            for i in all_list:
+                if i['userid']==str(chat_id):
+                    all_list.remove(i)
+            bot.sendMessage(chat_id,"Done! You won't receive anymore orders. However, you may still accept existing orders!")
 
+        elif msg['text']=="/report":
+            bot.sendMessage(chat_id,"Use this to report bugs or users. For reporting of users, let me know the user's /chat[userid] and the reason. {}".format(siren),reply_markup=ForceReply())
+            
         elif msg['text'].startswith("/chat"):
             for i in chat_list:
                 if i['user1']==str(chat_id):
@@ -268,17 +276,24 @@ def on_chat_message(msg):
 ##                        i['order']=msg['text']
 ##                        break
                 
-                bot.sendMessage(chat_id,"Type your tip amount! This tip+price of food goes to your Orderer when you collect your food from them.",reply_markup=ForceReply())
+                bot.sendMessage(chat_id,"Type your tip amount! Pay your Orderer when you collect your food!",reply_markup=ForceReply())
 
-            elif "Type your tip amount! This tip+price of food goes to your Orderer when you collect your food from them." in msg['reply_to_message']['text']:
-                orderer_num_int=0
-
+            elif "Type your tip amount! Pay your Orderer when you collect your food!" in msg['reply_to_message']['text']:
                 if chat_id in temp_dict.keys():
                     orderee_info_dict=temp_dict[chat_id]
                     orderee_info_dict['tip']=msg['text']
+                    temp_dict[chat_id]=orderee_info_dict
+                bot.sendMessage(chat_id, "Type a location to meet!",reply_markup=ForceReply())
+
+            elif "Type a location to meet!" in msg['reply_to_message']['text']:
+                orderer_num_int=0
+                if chat_id in temp_dict.keys():
+                    orderee_info_dict=temp_dict[chat_id]
+                    orderee_info_dict['location']=msg['text']
                     temp_options=orderee_info_dict['options']
                     temp_order=orderee_info_dict['order']
                     temp_tip=orderee_info_dict['tip']
+                    temp_location=orderee_info_dict['location']
                 
 ##                for i in orderee_list:
 ##                    if str(chat_id)in i['userid'] and "tip" not in i.keys():
@@ -297,16 +312,19 @@ def on_chat_message(msg):
                                              ])
                 
                 for j in all_list:
-                    print(j['stall'],temp_options[1])
                     if j['stall']==temp_options[1]:
                         orderer_num_int+=1
-                        bot.sendMessage(j["userid"],"Found an Orderee!\nOrder: %s\nTip: %s\n"%(temp_order,temp_tip),reply_markup=markup)
+                        bot.sendMessage(j["userid"],"Found an Orderee!\nOrder: {}\nTip: {}\nMeet: {}\nTo stop receiving: /stop".format(temp_order,temp_tip,temp_location),reply_markup=markup)
 
                 message_with_inline_keyboard=None
                 message_with_inline_keyboard=bot.sendMessage(chat_id, "{} orderers in the queue so far. Waiting for Orderers... {}".format(orderer_num_int,timer) ,reply_markup=markup1)
                 orderee_info_dict['kmsg']=message_with_inline_keyboard
                 orderee_list.append(orderee_info_dict)
                 del temp_dict[chat_id]
+
+            elif "Let me know the user's /chat[userid] and reason below." in msg['reply_to_message']['text']:
+                bot.forwardMessage(243431792,chat_id,msg['message_id'])
+
                 
         elif msg['text']=="/donate":
             bot.sendInvoice(chat_id,
@@ -323,7 +341,7 @@ def on_chat_message(msg):
             
 def on_callback_query(msg):
     query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
-    print('Callback Query:', query_id, from_id, query_data)
+##    print('Callback Query:', query_id, from_id, query_data)
     if query_data=="o1" or query_data=="o2":
 
         keyboard=InlineKeyboardMarkup(
@@ -407,10 +425,11 @@ def on_callback_query(msg):
                         temp_options=i['options']
                         temp_order=i['order']
                         temp_tip=i['tip']
+                        temp_location=i['location']
                         markup1=InlineKeyboardMarkup(inline_keyboard=[
                         [InlineKeyboardButton(text="Accept",callback_data="A"+temp_options+str(from_id))]
                                                  ])
-                        bot.sendMessage(from_id,"Found an Orderee!\nOrder: %s\nTip: %s\n"%(temp_order,temp_tip),reply_markup=markup1)
+                        bot.sendMessage(from_id,"Found an Orderee!\nOrder: {}\nTip: {}\nMeet: {}\nTo stop receiving: /stop".format(temp_order,temp_tip,temp_location),reply_markup=markup1)
 
     elif query_data[0]=="A":
         found_orderee=False
@@ -432,7 +451,7 @@ def on_callback_query(msg):
                     bot.editMessageReplyMarkup(msg_idf)
                     break
             
-            bot.sendMessage(from_id,"Nice one la! {} We found an Orderee for you! See your orders here: /orders To chat with your Orderee, first click here: @orderup_chatbot and start the bot. Once done, chat with your Orderee here: /chat{}".format(thumbsup,query_data[5:]))
+            bot.sendMessage(from_id,"Nice one la! {} See your orders here: /orders To chat with your Orderee, first click here: @orderup_chatbot and start the bot. Once done, chat with your Orderee here: /chat{}".format(thumbsup,query_data[5:]))
             bot.sendMessage(query_data[5:],"Wah swee la! {} Your order has been accepted! See your orders here: /orders To chat with your Orderer, first click here: @orderup_chatbot and start the bot. Once done, chat with your Orderer here: /chat{}".format(thumbsup,from_id))
             
         else:
