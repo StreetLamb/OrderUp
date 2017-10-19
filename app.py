@@ -483,7 +483,7 @@ MessageLoop(bot,{'chat': on_chat_message,'callback_query': on_callback_query, 'p
 MessageLoop(bot2,{'chat': on_chat_message2}).run_as_thread()
 
 while 1:
-    time.sleep(10)
+    time.sleep(60)
 
 
 
