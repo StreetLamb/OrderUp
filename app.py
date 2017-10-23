@@ -110,11 +110,11 @@ def on_chat_message(msg):
         if msg['text']=="/start":
             verify(chat_id)
 
-        elif msg['text']=="/broadcast":
+        elif msg['text'].startswith("/broadcast"):
             if chat_id==243431792:
                 count=0 #count how many users in each batch to prevent spam
                 for i in id_phonedict:
-                    if count==20:
+                    if count>=20:
                         time.sleep(1)
                         count=0
                     else:
