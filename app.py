@@ -517,6 +517,8 @@ while 1:
     sg_time = datetime.now(singapore)
     if sg_time.strftime('%d')!=day:
         day=sg_time.strftime('%d')
+        all_list=[]
+        orderee_list=[]
     time.sleep(10)
     
 
