@@ -4,6 +4,8 @@ from pprint import pprint
 import telepot
 import os
 from telepot.loop import MessageLoop
+from datetime import datetime
+from pytz import timezone
 from telepot.namedtuple import InlineKeyboardMarkup, InlineKeyboardButton, ReplyKeyboardMarkup,ForceReply,KeyboardButton
 from telepot.namedtuple import LabeledPrice, ShippingOption
 from telepot.delegate import (
@@ -38,40 +40,40 @@ def verify(chat_id):
         ])
     bot.sendMessage(chat_id,introMessage,reply_markup=markup)
 
-def on_chat_message2(msg):
-    content_type, chat_type, chat_id = telepot.glance(msg)
-##    pprint(msg)
-    for i in chat_list:               
-        if i['user1']==str(chat_id):
-            if content_type=="text":
-                if msg['text']=="/bye":
-                    bot2.sendMessage(chat_id,"You are disconnected. Click here: /chat%s to reconnect."%i['user2'])
-                    chat_list.remove(i)
-                elif msg['text'].startswith("/chat"):
-                    break
-                    
-                else:
-                    bot2.sendMessage(int(i['user2']), "/chat{} says: ".format(chat_id))
-                    bot2.forwardMessage(int(i['user2']),chat_id,msg['message_id'])
-                    break
-    
-    if msg['text'].startswith("/chat"):
-        for i in chat_list:
-            if i['user1']==str(chat_id):
-                temp="/chat"+str(i['user2'])
-                chat_list.remove(i)
-                bot2.sendMessage(chat_id,"Previous chat was closed. Click here: %s to re-enter chat."%temp)
-        other_id=msg['text'][5:]
-        chat_pair={}
-        chat_pair['user1']=str(chat_id)
-        chat_pair['user2']=str(other_id)
-        chat_list.append(chat_pair)
-        bot2.sendMessage(chat_id,"You are connected to {}. Click here: /bye to close.".format(chat_pair['user2']))
+##def on_chat_message2(msg):
+##    content_type, chat_type, chat_id = telepot.glance(msg)
+####    print(msg)
+##    for i in chat_list:               
+##        if i['user1']==str(chat_id):
+##            if content_type=="text":
+##                if msg['text']=="/bye":
+##                    bot2.sendMessage(chat_id,"You are disconnected. Click here: /chat%s to reconnect."%i['user2'])
+##                    chat_list.remove(i)
+##                elif msg['text'].startswith("/chat"):
+##                    break
+##                    
+##                else:
+##                    bot2.sendMessage(int(i['user2']), "/chat{} says: ".format(chat_id))
+##                    bot2.forwardMessage(int(i['user2']),chat_id,msg['message_id'])
+##                    break
+##    
+##    if msg['text'].startswith("/chat"):
+##        for i in chat_list:
+##            if i['user1']==str(chat_id):
+##                temp="/chat"+str(i['user2'])
+##                chat_list.remove(i)
+##                bot2.sendMessage(chat_id,"Previous chat was closed. Click here: %s to re-enter chat."%temp)
+##        other_id=msg['text'][5:]
+##        chat_pair={}
+##        chat_pair['user1']=str(chat_id)
+##        chat_pair['user2']=str(other_id)
+##        chat_list.append(chat_pair)
+##        bot2.sendMessage(chat_id,"You are connected to {}. Click here: /bye to close.".format(chat_pair['user2']))
 
 
 def on_chat_message(msg):
     content_type, chat_type, chat_id = telepot.glance(msg)
-##    pprint(msg)
+##    print(msg)
 
 ##    for i in chat_list:               
 ##            if i['user1']==str(chat_id):
@@ -108,6 +110,17 @@ def on_chat_message(msg):
         if msg['text']=="/start":
             verify(chat_id)
 
+        elif msg['text']=="/broadcast":
+            if chat_id==243431792:
+                count=0 #count how many users in each batch to prevent spam
+                for i in id_phonedict:
+                    if count==20:
+                        time.sleep(1)
+                        count=0
+                    else:
+                        count+=1
+                    bot.sendMessage(i,msg)
+
         elif msg['text']=="/stop":
             for i in all_list:
                 if i['userid']==str(chat_id):
@@ -115,21 +128,21 @@ def on_chat_message(msg):
             bot.sendMessage(chat_id,"Done! You won't receive anymore orders. However, you may still accept existing orders!")
 
         elif msg['text']=="/report":
-            bot.sendMessage(chat_id,"Use this to report bugs or users. For reporting of users, let me know the user's /chat[userid] and the reason. {}".format(siren),reply_markup=ForceReply())
+            bot.sendMessage(chat_id,"If reporting user, let me know the user name, mobile number and the reason below.",reply_markup=ForceReply())
             
-        elif msg['text'].startswith("/chat"):
-            for i in chat_list:
-                if i['user1']==str(chat_id):
-                    temp="/chat"+str(i['user2'])
-                    chat_list.remove(i)
-                    bot2.sendMessage(chat_id,"Previous chat was closed. Click here: %s to re-enter chat."%temp)
-            other_id=msg['text'][5:]
-            chat_pair={}
-            chat_pair['user1']=str(chat_id)
-            chat_pair['user2']=str(other_id)
-            chat_list.append(chat_pair)
-            bot2.sendMessage(chat_id,"You are connected to {}. Click here: /bye to close.".format(chat_pair['user2']))
-            bot.sendMessage(chat_id, "You are connected. Click here to chat: @orderup_chatbot")
+##        elif msg['text'].startswith("/chat"):
+##            for i in chat_list:
+##                if i['user1']==str(chat_id):
+##                    temp="/chat"+str(i['user2'])
+##                    chat_list.remove(i)
+##                    bot2.sendMessage(chat_id,"Previous chat was closed. Click here: %s to re-enter chat."%temp)
+##            other_id=msg['text'][5:]
+##            chat_pair={}
+##            chat_pair['user1']=str(chat_id)
+##            chat_pair['user2']=str(other_id)
+##            chat_list.append(chat_pair)
+##            bot2.sendMessage(chat_id,"You are connected to {}. Click here: /bye to close.".format(chat_pair['user2']))
+##            bot.sendMessage(chat_id, "You are connected. Click here to chat: @orderup_chatbot")
             
 
         elif msg['text']=="/status":
@@ -146,6 +159,7 @@ def on_chat_message(msg):
             o1_stall_11=0
             o1_stall_12=0
             o1_stall_13=0
+            o1_stall_14=0
             o2_stall_1=0
             o2_stall_2=0
             o2_stall_3=0
@@ -159,6 +173,7 @@ def on_chat_message(msg):
             o2_stall_11=0
             o2_stall_12=0
             o2_stall_13=0
+            o2_stall_14=0
             for i in all_list:
                 if i["stall"]=="1":
                     o1_stall_1+=1
@@ -186,6 +201,8 @@ def on_chat_message(msg):
                     o1_stall_12+=1
                 elif i["stall"]=="d":
                     o1_stall_13+=1
+                elif i["stall"]=="e":
+                    o1_stall_14+=1
                     
             for j in orderee_list:
                 if j["options"][1]=="1":
@@ -214,8 +231,10 @@ def on_chat_message(msg):
                     o2_stall_12+=1
                 elif j["options"][1]=="d":
                     o2_stall_13+=1
+                elif j["options"][1]=="e":
+                    o2_stall_14+=1
                     
-            message="*Soya Milk*\nOrderer: {} Orderee: {}\n*Fruit Juice*\nOrderer: {} Orderee: {}\n*Chinese Food*\nOrderer: {} Orderee: {}\n*Western Food*\nOrderer: {} Orderee: {}\n*Chicken Rice*\nOrderer: {} Orderee: {}\n*Japanese Food*\nOrderer: {} Orderee: {}\n*Ramen Corner*\nOrderer: {} Orderee: {}\n*Yong Tau Foo*\nOrderer: {} Orderee: {}\n*Vegetarian Food*\nOrderer: {} Orderee: {}\n*Fishball Noddles*\nOrderer: {} Orderee: {}\n*Indian Food*\nOrderer: {} Orderee: {}\n*Indonesian Food*\nOrderer: {} Orderee: {}\n*Drinks and Snacks*\nOrderer: {} Orderee: {}\n".format(
+            message="*Soya Milk*\nOrderer: {} Orderee: {}\n*Fruit Juice*\nOrderer: {} Orderee: {}\n*Chinese Food*\nOrderer: {} Orderee: {}\n*Western Food*\nOrderer: {} Orderee: {}\n*Chicken Rice*\nOrderer: {} Orderee: {}\n*Japanese Food*\nOrderer: {} Orderee: {}\n*Ramen Corner*\nOrderer: {} Orderee: {}\n*Yong Tau Foo*\nOrderer: {} Orderee: {}\n*Vegetarian Food*\nOrderer: {} Orderee: {}\n*Fishball Noddles*\nOrderer: {} Orderee: {}\n*Indian Food*\nOrderer: {} Orderee: {}\n*Indonesian Food*\nOrderer: {} Orderee: {}\n*Drinks and Snacks*\nOrderer: {} Orderee: {}\n*McDonalds*\nOrderer: {} Orderee: {}\n".format(
                 o1_stall_1,
                 o2_stall_1,
                 o1_stall_2,
@@ -241,27 +260,29 @@ def on_chat_message(msg):
                 o1_stall_12,
                 o2_stall_12,
                 o1_stall_13,
-                o2_stall_13)
+                o2_stall_13,
+                o1_stall_14,
+                o2_stall_14)
             bot.sendMessage(chat_id,message,parse_mode="Markdown")
 
         elif msg['text']=="/orders":
-            my_orderer_msg="***My orders***\n" #showing who your orderers
-            my_orderee_msg="***What I'm ordering for others***\n" #showing who you ordering for
+            my_orderer_msg="---My orders for today---\n" #showing who your orderers
+            my_orderee_msg="---What I'm ordering for others today---\n" #showing who you ordering for
             temp_num=0
             for i in all_list:
                 if str(chat_id) in i['orderees']:
                     for k in orderee_list:
                         if 'orderer' in k.keys() and str(k['orderer'])==i['userid']:
                             temp_num+=1
-                            my_orderer_msg+="{}) Orderer id: {}\nStall: {}\nOrder: {}\nTip: {}\nClick to chat: /chat{}\n\n".format(temp_num,i['userid'],i['stall'],k['order'],k['tip'],i['userid'])
+                            my_orderer_msg+="{}) Orderer id: {}\nStall: {}\nOrder: {}\nTip: {}\n[CLICK HERE TO CHAT](tg://user?id={})\n\n".format(temp_num,i['userid'],i['stall'],k['order'],k['tip'],i['userid'])
                             
-            bot.sendMessage(chat_id,my_orderer_msg)
+            bot.sendMessage(chat_id,my_orderer_msg,parse_mode="Markdown")
             temp_num=0
             for j in orderee_list:
                 if 'orderer' in j.keys() and j['orderer']==chat_id:
                     temp_num+=1
-                    my_orderee_msg+="{}) Orderee id: {}\nStall: {}\nOrder: {}\nTip: {}\nClick to chat: /chat{}\n\n".format(temp_num,j['userid'],j['options'][1],j['order'],j['tip'],j['userid'])
-            bot.sendMessage(chat_id,my_orderee_msg)
+                    my_orderee_msg+="{}) Orderee id: {}\nStall: {}\nOrder: {}\nTip: {}\n[CLICK HERE TO CHAT](tg://user?id={})\n\n".format(temp_num,j['userid'],j['options'][1],j['order'],j['tip'],j['userid'])
+            bot.sendMessage(chat_id,my_orderee_msg,parse_mode="Markdown")
 
 
         elif 'reply_to_message' in msg.keys():
@@ -322,7 +343,7 @@ def on_chat_message(msg):
                 orderee_list.append(orderee_info_dict)
                 del temp_dict[chat_id]
 
-            elif "Let me know the user's /chat[userid] and reason below." in msg['reply_to_message']['text']:
+            elif "If reporting user, let me know the user name, mobile number and the reason below." in msg['reply_to_message']['text']:
                 bot.forwardMessage(243431792,chat_id,msg['message_id'])
 
                 
@@ -341,7 +362,7 @@ def on_chat_message(msg):
             
 def on_callback_query(msg):
     query_id, from_id, query_data = telepot.glance(msg, flavor='callback_query')
-##    print('Callback Query:', query_id, from_id, query_data)
+    print('Callback Query:', query_id, from_id, query_data)
     if query_data=="o1" or query_data=="o2":
 
         keyboard=InlineKeyboardMarkup(
@@ -364,7 +385,8 @@ def on_callback_query(msg):
                     [InlineKeyboardButton(text="Indian Food", callback_data="sb"+query_data),
                      InlineKeyboardButton(text="Indonesian Food", callback_data="sc"+query_data)],
                     
-                    [InlineKeyboardButton(text="Drinks and Snacks", callback_data="sd"+query_data)]
+                    [InlineKeyboardButton(text="Drinks and Snacks", callback_data="sd"+query_data),
+                     InlineKeyboardButton(text="McDonald's", callback_data="se"+query_data)]
                     ]
                 )
         if query_data=="o1":
@@ -451,8 +473,8 @@ def on_callback_query(msg):
                     bot.editMessageReplyMarkup(msg_idf)
                     break
             
-            bot.sendMessage(from_id,"Nice one la! {} See your orders here: /orders To chat with your Orderee, first click here: @orderup_chatbot and start the bot. Once done, chat with your Orderee here: /chat{}".format(thumbsup,query_data[5:]))
-            bot.sendMessage(query_data[5:],"Wah swee la! {} Your order has been accepted! See your orders here: /orders To chat with your Orderer, first click here: @orderup_chatbot and start the bot. Once done, chat with your Orderer here: /chat{}".format(thumbsup,from_id))
+            bot.sendMessage(from_id,"Nice one la! {} See your orders here: /orders To chat with your Orderee, [CLICK HERE](tg://user?id={})".format(thumbsup,query_data[5:]),parse_mode="Markdown")
+            bot.sendMessage(query_data[5:],"Wah swee la! {} Your order has been accepted! See your orders here: /orders To chat with your Orderer, [CLICK HERE](tg://user?id={})".format(thumbsup,from_id), parse_mode="Markdown")
             
         else:
             bot.sendMessage(from_id,"Someone already accepted the order!")
@@ -478,12 +500,19 @@ def on_callback_query(msg):
 TOKEN1='450317924:AAFiqyqZvaCP5VgkDJ0a5kJK7wbSqo8b4Ts'
 TOKEN2='450738219:AAFa5zrteFSpNlYJOlyWfA4dzsvWQfj5-VU'
 bot=telepot.Bot(TOKEN1)
-bot2=telepot.Bot(TOKEN2)
+##bot2=telepot.Bot(TOKEN2)
 MessageLoop(bot,{'chat': on_chat_message,'callback_query': on_callback_query, 'pre_checkout_query': on_pre_checkout_query}).run_as_thread()
-MessageLoop(bot2,{'chat': on_chat_message2}).run_as_thread()
+##MessageLoop(bot2,{'chat': on_chat_message2}).run_as_thread()
+day=0
 
 while 1:
-    time.sleep(60)
+    singapore = timezone('Asia/Singapore')
+    global sg_time
+    sg_time = datetime.now(singapore)
+    if sg_time.strftime('%d')!=day:
+        day=sg_time.strftime('%d')
+    time.sleep(10)
+    
 
 
 
