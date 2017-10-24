@@ -166,20 +166,20 @@ def on_chat_message(msg):
             o1_stall_12=0
             o1_stall_13=0
             o1_stall_14=0
-            o2_stall_1=0
-            o2_stall_2=0
-            o2_stall_3=0
-            o2_stall_4=0
-            o2_stall_5=0
-            o2_stall_6=0
-            o2_stall_7=0
-            o2_stall_8=0
-            o2_stall_9=0
-            o2_stall_10=0
-            o2_stall_11=0
-            o2_stall_12=0
-            o2_stall_13=0
-            o2_stall_14=0
+##            o2_stall_1=0
+##            o2_stall_2=0
+##            o2_stall_3=0
+##            o2_stall_4=0
+##            o2_stall_5=0
+##            o2_stall_6=0
+##            o2_stall_7=0
+##            o2_stall_8=0
+##            o2_stall_9=0
+##            o2_stall_10=0
+##            o2_stall_11=0
+##            o2_stall_12=0
+##            o2_stall_13=0
+##            o2_stall_14=0
             for i in all_list:
                 if i["stall"]=="1":
                     o1_stall_1+=1
@@ -210,65 +210,55 @@ def on_chat_message(msg):
                 elif i["stall"]=="e":
                     o1_stall_14+=1
                     
-            for j in orderee_list:
-                if j["options"][1]=="1":
-                    o2_stall_1+=1
-                elif j["options"][1]=="2":
-                    o2_stall_2+=1
-                elif j["options"][1]=="3":
-                    o2_stall_3+=1
-                elif j["options"][1]=="4":
-                    o2_stall_4+=1
-                elif j["options"][1]=="5":
-                    o2_stall_5+=1
-                elif j["options"][1]=="6":
-                    o2_stall_6+=1
-                elif j["options"][1]=="7":
-                    o2_stall_7+=1
-                elif j["options"][1]=="8":
-                    o2_stall_8+=1
-                elif j["options"][1]=="9":
-                    o2_stall_9+=1
-                elif j["options"][1]=="a":
-                    o2_stall_10+=1
-                elif j["options"][1]=="b":
-                    o2_stall_11+=1
-                elif j["options"][1]=="c":
-                    o2_stall_12+=1
-                elif j["options"][1]=="d":
-                    o2_stall_13+=1
-                elif j["options"][1]=="e":
-                    o2_stall_14+=1
+##            for j in orderee_list:
+##                if j["options"][1]=="1":
+##                    o2_stall_1+=1
+##                elif j["options"][1]=="2":
+##                    o2_stall_2+=1
+##                elif j["options"][1]=="3":
+##                    o2_stall_3+=1
+##                elif j["options"][1]=="4":
+##                    o2_stall_4+=1
+##                elif j["options"][1]=="5":
+##                    o2_stall_5+=1
+##                elif j["options"][1]=="6":
+##                    o2_stall_6+=1
+##                elif j["options"][1]=="7":
+##                    o2_stall_7+=1
+##                elif j["options"][1]=="8":
+##                    o2_stall_8+=1
+##                elif j["options"][1]=="9":
+##                    o2_stall_9+=1
+##                elif j["options"][1]=="a":
+##                    o2_stall_10+=1
+##                elif j["options"][1]=="b":
+##                    o2_stall_11+=1
+##                elif j["options"][1]=="c":
+##                    o2_stall_12+=1
+##                elif j["options"][1]=="d":
+##                    o2_stall_13+=1
+##                elif j["options"][1]=="e":
+##                    o2_stall_14+=1
                     
-            message="*Soya Milk*\nOrderer: {} Orderee: {}\n*Fruit Juice*\nOrderer: {} Orderee: {}\n*Chinese Food*\nOrderer: {} Orderee: {}\n*Western Food*\nOrderer: {} Orderee: {}\n*Chicken Rice*\nOrderer: {} Orderee: {}\n*Japanese Food*\nOrderer: {} Orderee: {}\n*Ramen Corner*\nOrderer: {} Orderee: {}\n*Yong Tau Foo*\nOrderer: {} Orderee: {}\n*Vegetarian Food*\nOrderer: {} Orderee: {}\n*Fishball Noddles*\nOrderer: {} Orderee: {}\n*Indian Food*\nOrderer: {} Orderee: {}\n*Indonesian Food*\nOrderer: {} Orderee: {}\n*Drinks and Snacks*\nOrderer: {} Orderee: {}\n*McDonalds*\nOrderer: {} Orderee: {}\n".format(
+            message=("*Soya Milk*\nOrderer: {}\n*Fruit Juice*\nOrderer: {}\n*Chinese Food*\nOrderer: {}\n"
+            "*Western Food*\nOrderer: {}\n*Chicken Rice*\nOrderer: {}\n*Japanese Food*\nOrderer: {}\n"
+                     "*Ramen Corner*\nOrderer: {}\n*Yong Tau Foo*\nOrderer: {}\n*Vegetarian Food*\nOrderer: {}\n"
+                     "*Fishball Noddles*\nOrderer: {}\n*Indian Food*\nOrderer: {}\n*Indonesian Food*\nOrderer: {}\n"
+                     "*Drinks and Snacks*\nOrderer: {}\n*McDonalds*\nOrderer: {}\n".format(
                 o1_stall_1,
-                o2_stall_1,
                 o1_stall_2,
-                o2_stall_2,
                 o1_stall_3,
-                o2_stall_3,
                 o1_stall_4,
-                o2_stall_4,
                 o1_stall_5,
-                o2_stall_5,
                 o1_stall_6,
-                o2_stall_6,
                 o1_stall_7,
-                o2_stall_7,
                 o1_stall_8,
-                o2_stall_8,
                 o1_stall_9,
-                o2_stall_9,
                 o1_stall_10,
-                o2_stall_10,
                 o1_stall_11,
-                o2_stall_11,
                 o1_stall_12,
-                o2_stall_12,
                 o1_stall_13,
-                o2_stall_13,
-                o1_stall_14,
-                o2_stall_14)
+                o1_stall_14))
             bot.sendMessage(chat_id,message,parse_mode="Markdown")
 
         elif msg['text']=="/orders":
