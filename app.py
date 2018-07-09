@@ -493,12 +493,10 @@ def on_callback_query(msg):
 
 
 
-TOKEN1='450317924:AAFiqyqZvaCP5VgkDJ0a5kJK7wbSqo8b4Ts'
-##TOKEN2='450738219:AAFa5zrteFSpNlYJOlyWfA4dzsvWQfj5-VU'
+TOKEN1=##Add you token here
+
 bot=telepot.Bot(TOKEN1)
-##bot2=telepot.Bot(TOKEN2)
 MessageLoop(bot,{'chat': on_chat_message,'callback_query': on_callback_query, 'pre_checkout_query': on_pre_checkout_query}).run_as_thread()
-##MessageLoop(bot2,{'chat': on_chat_message2}).run_as_thread()
 day=0
 
 while 1:
